@@ -26,6 +26,8 @@ require "partiduo-modeles"
 require "partiduo-modeles/ui/bulma"
 require "partiduo-bankimport"
 require "partiduo-bankimport/ui/bulma"
+require "partiduo-amortis"
+require "partiduo-amortis/ui/bulma"
 
 # Version de la distribution de production.
 module PartiduoDist

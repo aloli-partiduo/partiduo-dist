@@ -14,5 +14,6 @@ Marten.configure do |config|
                           Urssaf::INSTALLED_APPS + Urssaf::Ui::INSTALLED_APPS +
                           Crm::INSTALLED_APPS + Crm::Ui::INSTALLED_APPS +
                           Modeles::INSTALLED_APPS + Modeles::Ui::INSTALLED_APPS +
-                          Bankimport::INSTALLED_APPS + Bankimport::Ui::INSTALLED_APPS
+                          Bankimport::INSTALLED_APPS + Bankimport::Ui::INSTALLED_APPS +
+                          Amortis::INSTALLED_APPS + Amortis::Ui::INSTALLED_APPS
 end
