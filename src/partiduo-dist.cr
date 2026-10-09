@@ -28,6 +28,8 @@ require "partiduo-bankimport"
 require "partiduo-bankimport/ui/bulma"
 require "partiduo-amortis"
 require "partiduo-amortis/ui/bulma"
+require "partiduo-sepa"
+require "partiduo-sepa/ui/bulma"
 
 # Version de la distribution de production.
 module PartiduoDist

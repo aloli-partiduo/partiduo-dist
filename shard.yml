@@ -1,5 +1,5 @@
 name: partiduo-dist
-version: 0.1.2
+version: 0.1.3
 
 description: |
   Distribution de production de Partiduo : le cœur, l'interface Bulma et
@@ -78,6 +78,10 @@ dependencies:
   # Immobilisations et amortissements (ADR-003) ; dépôt à publier.
   partiduo-amortis:
     github: aloli-crystal/partiduo-amortis
+    branch: development
+  # Paiements SEPA : virements et prélèvements (ADR-003) ; dépôt à publier.
+  partiduo-sepa:
+    github: aloli-crystal/partiduo-sepa
     branch: development
   marten:
     github: aloli-crystal/marten
