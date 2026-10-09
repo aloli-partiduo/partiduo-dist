@@ -13,5 +13,6 @@ Marten.configure do |config|
                           Teledec::INSTALLED_APPS + Teledec::Ui::INSTALLED_APPS +
                           Urssaf::INSTALLED_APPS + Urssaf::Ui::INSTALLED_APPS +
                           Crm::INSTALLED_APPS + Crm::Ui::INSTALLED_APPS +
-                          Modeles::INSTALLED_APPS + Modeles::Ui::INSTALLED_APPS
+                          Modeles::INSTALLED_APPS + Modeles::Ui::INSTALLED_APPS +
+                          Bankimport::INSTALLED_APPS + Bankimport::Ui::INSTALLED_APPS
 end
