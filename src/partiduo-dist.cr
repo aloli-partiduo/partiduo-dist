@@ -30,6 +30,8 @@ require "partiduo-amortis"
 require "partiduo-amortis/ui/bulma"
 require "partiduo-sepa"
 require "partiduo-sepa/ui/bulma"
+require "partiduo-reports"
+require "partiduo-reports/ui/bulma"
 
 # Version de la distribution de production.
 module PartiduoDist

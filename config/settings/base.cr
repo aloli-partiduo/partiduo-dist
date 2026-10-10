@@ -16,5 +16,6 @@ Marten.configure do |config|
                           Modeles::INSTALLED_APPS + Modeles::Ui::INSTALLED_APPS +
                           Bankimport::INSTALLED_APPS + Bankimport::Ui::INSTALLED_APPS +
                           Amortis::INSTALLED_APPS + Amortis::Ui::INSTALLED_APPS +
-                          Sepa::INSTALLED_APPS + Sepa::Ui::INSTALLED_APPS
+                          Sepa::INSTALLED_APPS + Sepa::Ui::INSTALLED_APPS +
+                          Reports::INSTALLED_APPS + Reports::Ui::INSTALLED_APPS
 end
