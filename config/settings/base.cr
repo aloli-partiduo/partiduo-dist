@@ -18,5 +18,6 @@ Marten.configure do |config|
                           Amortis::INSTALLED_APPS + Amortis::Ui::INSTALLED_APPS +
                           Sepa::INSTALLED_APPS + Sepa::Ui::INSTALLED_APPS +
                           Reports::INSTALLED_APPS + Reports::Ui::INSTALLED_APPS +
-                          Import::INSTALLED_APPS + Import::Ui::INSTALLED_APPS
+                          Import::INSTALLED_APPS + Import::Ui::INSTALLED_APPS +
+                          Forms::INSTALLED_APPS + Forms::Ui::INSTALLED_APPS
 end

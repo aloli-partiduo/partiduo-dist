@@ -1,5 +1,5 @@
 name: partiduo-dist
-version: 0.1.5
+version: 0.1.6
 
 description: |
   Distribution de production de Partiduo : le cœur, l'interface Bulma et
@@ -90,6 +90,10 @@ dependencies:
   # Import d'opérations en masse : CSV et FEC (ADR-003) ; dépôt à publier.
   partiduo-import:
     github: aloli-crystal/partiduo-import
+    branch: development
+  # Formulaires publics par jeton (ADR-003) ; dépôt à publier.
+  partiduo-form:
+    github: aloli-crystal/partiduo-form
     branch: development
   marten:
     github: aloli-crystal/marten

@@ -34,6 +34,8 @@ require "partiduo-reports"
 require "partiduo-reports/ui/bulma"
 require "partiduo-import"
 require "partiduo-import/ui/bulma"
+require "partiduo-form"
+require "partiduo-form/ui/bulma"
 
 # Version de la distribution de production.
 module PartiduoDist
