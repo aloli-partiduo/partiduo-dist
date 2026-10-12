@@ -1,4 +1,3 @@
-# NOTICE: This lockfile contains some overrides from shard.override.yml
 version: 2.0
 shards:
   asciicrystal:
@@ -9,9 +8,9 @@ shards:
     git: https://github.com/aloli-crystal/asciicrystal-pdf.git
     version: 2.3.24.112
 
-  authn: # Overridden
+  authn:
     git: https://github.com/aloli-crystal/authn.git
-    version: 0.3.0
+    version: 0.3.0+git.commit.be98021bf0da7c8fd8306b3d715e425aec5e7aa3
 
   bcrypt:
     git: https://github.com/jgaskins/bcrypt.git
@@ -45,7 +44,7 @@ shards:
     git: https://github.com/crystal-i18n/i18n.git
     version: 0.2.2
 
-  jose: # Overridden
+  jose:
     git: https://github.com/aloli-crystal/jose.git
     version: 0.2.0
 
@@ -57,13 +56,13 @@ shards:
     git: https://github.com/aloli-crystal/kramdown-asciidoc.git
     version: 2.1.1.5
 
-  marten: # Overridden
+  marten:
     git: https://github.com/aloli-crystal/marten.git
     version: 0.7.0+git.commit.daabb7c242a307a1c90899acbbf5c40f170fe2b8
 
   marten_auth:
-    git: https://github.com/martenframework/marten-auth.git
-    version: 0.2.1
+    git: https://github.com/aloli-crystal/marten-auth.git
+    version: 0.2.1+git.commit.9b53b72bec80555ce24289d6d689c7a226538674
 
   matrix:
     git: https://github.com/exilor/matrix.git
@@ -81,65 +80,89 @@ shards:
     git: https://github.com/spider-gazelle/openssl_ext.git
     version: 2.8.5
 
-  partiduo: # Overridden
+  partiduo:
     git: https://github.com/aloli-partiduo/partiduo-app.git
-    version: 0.1.0+git.commit.5c2267987c0438050c2c22ac4250d6f39ed527fe
+    version: 0.1.10+git.commit.ba07dd1ed8277c76176e8706a2d495d956494602
+
+  partiduo-amortis:
+    git: https://github.com/aloli-partiduo/partiduo-amortis.git
+    version: 0.1.2+git.commit.558214a03f8768a7255232f095d7a1abe16692fc
+
+  partiduo-bankimport:
+    git: https://github.com/aloli-partiduo/partiduo-bankimport.git
+    version: 0.1.2+git.commit.c1ee9fe47c906cabbb090467c5f6d597f4acad03
 
   partiduo-choruspro:
     git: https://github.com/aloli-partiduo/partiduo-choruspro.git
-    version: 0.1.0+git.commit.5a5618e105c0994045aed4e9f6cf9b7f9d2aa5b4
+    version: 0.1.2+git.commit.8f74d82d20500c10cd0977e17ecde0e86604233d
 
   partiduo-crm:
     git: https://github.com/aloli-partiduo/partiduo-crm.git
-    version: 0.1.0+git.commit.a22de7cfbb4c27e0423edf8aae9d7b272252c827
+    version: 0.1.2+git.commit.7906b3f6099635693ff74dc508622ca0b70f557b
 
-  partiduo-document: # Overridden
+  partiduo-document:
     git: https://github.com/aloli-partiduo/partiduo-document.git
-    version: 0.1.0+git.commit.097d534f8370ead82701eb6d4df5f097d79b4b94
+    version: 0.1.2+git.commit.f3acc06d02854d1fc137233b542f531cd0e8f9fb
 
-  partiduo-einvoicing: # Overridden
+  partiduo-einvoicing:
     git: https://github.com/aloli-partiduo/partiduo-einvoicing.git
-    version: 0.1.0+git.commit.7d0a66623dc43f39125c099dce68aa170a59d8cf
+    version: 0.1.2+git.commit.647ee28be5bef7b4a213ff19dc15b7c30ed00c64
 
   partiduo-esalink:
     git: https://github.com/aloli-partiduo/partiduo-esalink.git
-    version: 0.1.0+git.commit.cd28f74752ebb62383c37e2be2000af51d147c48
+    version: 0.1.2+git.commit.14bd2975a6e03215f913dda09b742fd9389cce77
+
+  partiduo-form:
+    git: https://github.com/aloli-partiduo/partiduo-form.git
+    version: 0.1.3+git.commit.5e5681e34013422d733f138ca2b033b093c70811
+
+  partiduo-import:
+    git: https://github.com/aloli-partiduo/partiduo-import.git
+    version: 0.1.2+git.commit.f5a97cbda1df12c96fb58b84c437b6ced4f3cef6
 
   partiduo-modeles:
     git: https://github.com/aloli-partiduo/partiduo-modeles.git
-    version: 0.1.0+git.commit.44f170a02b7030d4573b6c9c80e3192203057915
+    version: 0.1.2+git.commit.272613bf8e1bc5142adacca63de8fd75ccdb6d6e
+
+  partiduo-reports:
+    git: https://github.com/aloli-partiduo/partiduo-reports.git
+    version: 0.1.2+git.commit.da4e763ebcdddd64e755188f0fdca7e083246523
+
+  partiduo-sepa:
+    git: https://github.com/aloli-partiduo/partiduo-sepa.git
+    version: 0.1.2+git.commit.1e9c3a773a0bb8fbc6512881c09bfac18513c27e
 
   partiduo-superpdp:
     git: https://github.com/aloli-partiduo/partiduo-superpdp.git
-    version: 0.1.0+git.commit.f7401db34a9800c75781dfea1a3a5def95900114
+    version: 0.1.2+git.commit.1afead02a2dd5d87c9fbe07e5926c5ba6f131b45
 
   partiduo-teledec:
     git: https://github.com/aloli-partiduo/partiduo-teledec.git
-    version: 0.1.0+git.commit.9c1855f7729ee124ef988096c28f6470e2824bff
+    version: 0.1.3+git.commit.a02ff61ed95df9ca05047776677d4bf96349fd60
 
-  partiduo-ui-bulma: # Overridden
+  partiduo-ui-bulma:
     git: https://github.com/aloli-partiduo/partiduo-ui-bulma.git
-    version: 0.1.0+git.commit.ac5696095c78fa9656f93942732f956a625e023a
+    version: 0.1.6+git.commit.5e2b0604a438997b50e20fe284f840c1785e08d6
 
   partiduo-urssaf:
     git: https://github.com/aloli-partiduo/partiduo-urssaf.git
-    version: 0.2.0+git.commit.784b6908747824e828326f63c09fb8b5f523a149
+    version: 0.1.2+git.commit.0aeb8842f1778c78f301e652d31190d6cc568242
 
-  password-policy: # Overridden
+  password-policy:
     git: https://github.com/aloli-crystal/password-policy.git
     version: 0.1.0
 
-  pdf: # Overridden
+  pdf:
     git: https://github.com/aloli-crystal/pdf.git
     version: 1.22.1
 
-  pdf-a: # Overridden
+  pdf-a:
     git: https://github.com/aloli-crystal/pdf-a.git
-    version: 0.3.0
+    version: 0.3.0+git.commit.d205ecd704fd75528a24d6ecf3e062c907230ea4
 
-  pdf-validate: # Overridden
+  pdf-validate:
     git: https://github.com/aloli-crystal/pdf-validate.git
-    version: 0.47.0
+    version: 0.47.0+git.commit.e4ceee1d62745a75b13d5e164da269d07a7fbe89
 
   pg:
     git: https://github.com/will/crystal-pg.git
@@ -149,9 +172,9 @@ shards:
     git: https://github.com/aloli-crystal/rouge.git
     version: 4.7.0.3
 
-  saml: # Overridden
+  saml:
     git: https://github.com/aloli-crystal/saml.git
-    version: 1.18.1.3
+    version: 1.18.1.3+git.commit.d879b94f85ab1480a73cbbcc821f48d471d8f4fb
 
   stumpy_core:
     git: https://github.com/stumpycr/stumpy_core.git
@@ -165,11 +188,11 @@ shards:
     git: https://github.com/stumpycr/stumpy_png.git
     version: 5.0.1
 
-  totp: # Overridden
+  totp:
     git: https://github.com/aloli-crystal/totp.git
-    version: 0.1.0
+    version: 0.1.0+git.commit.f4d2cba2ce6630d6441bc85b2b06f662ab380fc2
 
-  webauthn: # Overridden
+  webauthn:
     git: https://github.com/aloli-crystal/webauthn.git
-    version: 0.1.0
+    version: 0.1.0+git.commit.9df38fbe65ad709096ef5455c27e5e13f49dc66e
 

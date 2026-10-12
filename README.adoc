@@ -36,14 +36,15 @@ qu'après publication des branches `production` des dépôts partiduo-* :
 
 == Versions figées
 
-Toutes les dépendances viennent de GitHub (dépôts publics `aloli-crystal`),
-branche par défaut ; `shard.override.yml` y ramène celles que les dépôts
-déclarent en `path:` pour le développement local. `shard.lock`, versionné,
-fixe le commit de chacune : c'est ce que le port construit. Pour monter de
-version, publier les dépôts concernés, puis :
+Toutes les dépendances viennent de GitHub (dépôts publics `aloli-crystal`
+sur leur branche par défaut, `aloli-partiduo` sur `development`). `shard.lock`,
+versionné, fixe le commit de chacune, sans aucune dépendance `path:` (l'outil
+`shards-tuples` du port les refuse) : c'est ce que le port construit. Pour
+monter de version, publier les dépôts concernés, puis, *sans override local* :
 
 [source,sh]
 ----
+rm -f shard.override.yml
 SKIP_MARTEN_CLI_PRECOMPILATION=1 shards update
 SKIP_MARTEN_CLI_PRECOMPILATION=1 shards build --release
 ----
@@ -53,3 +54,31 @@ puis committer `shard.lock` et régénérer la liste des sources du port
 
 Le développement se fait dans les dépôts de chaque partie, avec leurs
 dépendances locales ; la démonstration locale est `partiduo-demo`.
+
+== Développement local
+
+`shard.yml` et `shard.lock` référencent les shards maison sur GitHub
+(`aloli-crystal/*` et `aloli-partiduo/*`), suivis par branche. Le verrou
+versionné ne contient aucune dépendance `path:` : les ports FreeBSD et la CI
+l'exigent.
+
+Pour travailler sur les copies de travail voisines (`../../prod-crystal/<nom>`
+et `../partiduo-<dépôt>`), lancer :
+
+[source,sh]
+----
+scripts/override-local.sh
+----
+
+Le script génère un `shard.override.yml` *local et non versionné* (ignoré par
+git), installe les shards, puis remet `shard.lock` à son état versionné.
+Une copie de travail absente reste prise sur GitHub.
+
+Pour régénérer le verrou versionné, supprimer d'abord l'override local :
+
+[source,sh]
+----
+rm -f shard.override.yml
+SKIP_MARTEN_CLI_PRECOMPILATION=1 shards update
+scripts/override-local.sh   # retour au mode local
+----

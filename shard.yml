@@ -1,5 +1,5 @@
 name: partiduo-dist
-version: 0.1.7
+version: 0.1.8
 
 description: |
   Distribution de production de Partiduo : le cœur, l'interface Bulma et
@@ -32,8 +32,8 @@ targets:
 # suivent leur branche development (paquet partiduo-app-devel) ; la branche
 # production de partiduo-dist les suivra sur production (paquet
 # partiduo-app). Les shards maison suivent leur branche par défaut,
-# production. Les dépendances déclarées en path: par les dépôts eux-mêmes
-# (développement local) sont ramenées sur GitHub par shard.override.yml.
+# production. Tous les dépôts déclarent leurs dépendances sur GitHub :
+# shard.lock ne contient aucun path: (exigence du port FreeBSD).
 dependencies:
   # Le cœur : registre, événements et contrat Partiduo::Api.
   partiduo:

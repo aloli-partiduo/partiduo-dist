@@ -7,3 +7,5 @@
 /tmp/
 /media/
 /assets/
+# Override local du développement (scripts/override-local.sh), jamais versionné.
+/shard.override.yml
