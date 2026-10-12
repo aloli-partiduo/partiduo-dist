@@ -8,16 +8,16 @@
 # se construit hors de l'arborescence de développement.
 dependencies:
   partiduo:
-    github: aloli-crystal/partiduo-app
+    github: aloli-partiduo/partiduo-app
     branch: development
   partiduo-ui-bulma:
-    github: aloli-crystal/partiduo-ui-bulma
+    github: aloli-partiduo/partiduo-ui-bulma
     branch: development
   partiduo-document:
-    github: aloli-crystal/partiduo-document
+    github: aloli-partiduo/partiduo-document
     branch: development
   partiduo-einvoicing:
-    github: aloli-crystal/partiduo-einvoicing
+    github: aloli-partiduo/partiduo-einvoicing
     branch: development
   marten:
     github: aloli-crystal/marten

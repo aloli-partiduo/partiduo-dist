@@ -1,5 +1,5 @@
 name: partiduo-dist
-version: 0.1.6
+version: 0.1.7
 
 description: |
   Distribution de production de Partiduo : le cœur, l'interface Bulma et
@@ -37,63 +37,63 @@ targets:
 dependencies:
   # Le cœur : registre, événements et contrat Partiduo::Api.
   partiduo:
-    github: aloli-crystal/partiduo-app
+    github: aloli-partiduo/partiduo-app
     branch: development
   # L'interface Bulma, qui monte les interfaces des extensions.
   partiduo-ui-bulma:
-    github: aloli-crystal/partiduo-ui-bulma
+    github: aloli-partiduo/partiduo-ui-bulma
     branch: development
   # Extensions, activées ou non par instance (PARTIDUO_MODULES).
   partiduo-document:
-    github: aloli-crystal/partiduo-document
+    github: aloli-partiduo/partiduo-document
     branch: development
   partiduo-einvoicing:
-    github: aloli-crystal/partiduo-einvoicing
+    github: aloli-partiduo/partiduo-einvoicing
     branch: development
   partiduo-superpdp:
-    github: aloli-crystal/partiduo-superpdp
+    github: aloli-partiduo/partiduo-superpdp
     branch: development
   partiduo-esalink:
-    github: aloli-crystal/partiduo-esalink
+    github: aloli-partiduo/partiduo-esalink
     branch: development
   partiduo-choruspro:
-    github: aloli-crystal/partiduo-choruspro
+    github: aloli-partiduo/partiduo-choruspro
     branch: development
   partiduo-teledec:
-    github: aloli-crystal/partiduo-teledec
+    github: aloli-partiduo/partiduo-teledec
     branch: development
   partiduo-urssaf:
-    github: aloli-crystal/partiduo-urssaf
+    github: aloli-partiduo/partiduo-urssaf
     branch: development
   partiduo-crm:
-    github: aloli-crystal/partiduo-crm
+    github: aloli-partiduo/partiduo-crm
     branch: development
   partiduo-modeles:
-    github: aloli-crystal/partiduo-modeles
+    github: aloli-partiduo/partiduo-modeles
     branch: development
   # Import des relevés bancaires (ADR-011 D6) ; dépôt à publier.
   partiduo-bankimport:
-    github: aloli-crystal/partiduo-bankimport
+    github: aloli-partiduo/partiduo-bankimport
     branch: development
   # Immobilisations et amortissements (ADR-003) ; dépôt à publier.
   partiduo-amortis:
-    github: aloli-crystal/partiduo-amortis
+    github: aloli-partiduo/partiduo-amortis
     branch: development
   # Paiements SEPA : virements et prélèvements (ADR-003) ; dépôt à publier.
   partiduo-sepa:
-    github: aloli-crystal/partiduo-sepa
+    github: aloli-partiduo/partiduo-sepa
     branch: development
   # Rapports avancés et listings (ADR-003) ; dépôt à publier.
   partiduo-reports:
-    github: aloli-crystal/partiduo-reports
+    github: aloli-partiduo/partiduo-reports
     branch: development
   # Import d'opérations en masse : CSV et FEC (ADR-003) ; dépôt à publier.
   partiduo-import:
-    github: aloli-crystal/partiduo-import
+    github: aloli-partiduo/partiduo-import
     branch: development
   # Formulaires publics par jeton (ADR-003) ; dépôt à publier.
   partiduo-form:
-    github: aloli-crystal/partiduo-form
+    github: aloli-partiduo/partiduo-form
     branch: development
   marten:
     github: aloli-crystal/marten
