@@ -13,7 +13,7 @@ application. C'est la source du paquet FreeBSD `partiduo-app` (dépôt de ports
 |Programme |Rôle
 
 |`partiduo-server` |Serveur HTTP d'une instance (réglages de production de `partiduo-ui-bulma`).
-|`partiduo-manage` |Ligne de commande Marten : `migrate`, `provision`, `collectassets`…
+|`partiduo-manage` |Ligne de commande Marten : `migrate`, `provision`, `collectassets`… et `demo` (démonstration, ci-dessous).
 |`partiduo-modeles-pdf` |Convertisseur PDF de l'extension MODELES, lancé par le serveur (`PARTIDUO_MODELES_PDF=auto` : cherché à côté de `partiduo-server`).
 |===
 
@@ -53,7 +53,86 @@ puis committer `shard.lock` et régénérer la liste des sources du port
 (`aloli-ports`).
 
 Le développement se fait dans les dépôts de chaque partie, avec leurs
-dépendances locales ; la démonstration locale est `partiduo-demo`.
+dépendances locales ; les dossiers de démonstration sont dans
+`partiduo-demo` (voir ci-dessous).
+
+== Démonstration
+
+Les dossiers de démonstration (`atelier`, `liberal`, `micro`, `foyer`) sont
+des fichiers de données déclaratifs versionnés dans `partiduo-demo`
+(`dossiers/<code>/`, format décrit par `doc/format-dossiers.adoc` de ce
+dépôt-là). La distribution les charge et les vérifie :
+
+[cols="1,3",options="header"]
+|===
+|Commande |Rôle
+
+|`partiduo-manage demo charger --dossier=<code> --source=<répertoire> [--reset]`
+|Lit les fichiers du dossier et le charge *par le contrat `Partiduo::Api`*
+et celui des extensions (aucune insertion SQL) : provisionnement (type de
+dossier compris), utilisateurs, référentiel, paramètres, puis opérations
+datées jouées au jour le jour jusqu'au jour du chargement (horloge du
+dossier déplacée), et opérations de fin. `--reset` vide d'abord le schéma.
+Mots de passe de test : `DEMO_PASSWORDS='adresse=mot de passe,…'`, ceux
+qui manquent sont générés et affichés.
+
+|`partiduo-manage demo verifier --dossier=<code> --source=<répertoire> [--annee=AAAA]`
+|Compare les grands totaux du dossier chargé (balance, soldes de comptes,
+factures, déclarations, relevés, télédéclarations…) aux résultats attendus
+déclarés (`attendus.yml`) ; code de sortie non nul en cas d'écart.
+
+|`PARTIDUO_DEMO=1 partiduo-server`
+|Sert un dossier déjà chargé, services externes simulés ; écrit
+`PARTIDUO_DEMO_READY_FILE` quand il est prêt, s'arrête à la création de
+`PARTIDUO_DEMO_STOP_FILE` (`scripts/demo` de `partiduo-demo`).
+|===
+
+Garde-fous : la commande `demo` et le serveur de démonstration refusent
+toute base dont le nom ne contient pas « demo ». Les simulateurs des
+services externes (plateforme agréée d'EINV, TELEDEC, Chorus Pro, URSSAF,
+courriel gardé en mémoire ; `src/demo/simulators.cr`, doubles des specs de
+chaque extension) ne sont branchés qu'en mode démonstration : une instance
+réelle n'en utilise jamais.
+
+=== Charger et vérifier les quatre dossiers
+
+Il n'y a pas de CI pour cette distribution : la construction du binaire
+complet dépasse un exécuteur GitHub gratuit. Le chargement réel se vérifie
+*sur le poste*, et à la construction des paquets FreeBSD :
+
+[source,sh]
+----
+SKIP_MARTEN_CLI_PRECOMPILATION=1 shards build partiduo-manage --no-debug
+SOURCE=../partiduo-demo/dossiers
+for dossier in atelier liberal micro foyer; do
+  base="partiduo_demo_${dossier}_verif"
+  createdb --encoding=UTF8 "$base"
+  DATABASE_URL="postgres:///$base?host=/tmp" PARTIDUO_MEDIA_ROOT="tmp/media-$dossier" \
+    bin/partiduo-manage demo charger --dossier="$dossier" --source="$SOURCE" &&
+  DATABASE_URL="postgres:///$base?host=/tmp" \
+    bin/partiduo-manage demo verifier --dossier="$dossier" --source="$SOURCE"
+  dropdb "$base"
+done
+----
+
+Chaque `verifier` affiche ses contrôles (`ok` ou `ÉCART`) et se termine par
+« N contrôles conformes ». Pour essayer les dossiers dans un navigateur :
+`scripts/demo` de `partiduo-demo`, qui utilise les binaires de ce dépôt
+(`bin/`, ou le répertoire `PARTIDUO_DIST_BIN`).
+
+Organisation :
+
+[source]
+----
+src/demo.cr                  # chargeur, vérification, simulateurs, serveur de démonstration
+src/demo/format.cr           # structures des fichiers (format 1)
+src/demo/dates.cr            # dates relatives (N-1-03-06, M-2-04, J+4…)
+src/demo/loader.cr           # provisionnement, utilisateurs, référentiel, agenda
+src/demo/loader/             # opérations : ventes, achats, comptabilité, indépendants, extensions, foyer
+src/demo/verifier.cr         # contrôles d'attendus.yml
+src/demo/command.cr          # partiduo-manage demo charger|verifier
+src/demo/server.cr           # partiduo-server avec PARTIDUO_DEMO=1
+----
 
 == Développement local
 

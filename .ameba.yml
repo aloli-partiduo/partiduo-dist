@@ -1,0 +1,14 @@
+# Configuration d'Ameba pour partiduo-dist.
+Globs:
+  - "**/*.cr"
+  - "!lib"
+
+Excluded:
+  - lib/
+  - tmp/
+
+# La vérification d'un dossier de démonstration aiguille chaque type de
+# contrôle d'attendus.yml : la complexité mesurée y reflète la liste des
+# contrôles du format, pas une logique.
+Metrics/CyclomaticComplexity:
+  MaxComplexity: 20
