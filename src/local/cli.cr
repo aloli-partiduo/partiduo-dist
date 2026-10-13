@@ -3,6 +3,7 @@
 require "option_parser"
 require "./home"
 require "./tools"
+require "./backup"
 
 module PartiduoDist
   module Local
@@ -18,6 +19,7 @@ module PartiduoDist
     module CLI
       USAGE = <<-TEXT
         Usage : partiduo dossier <action> [options]
+                partiduo cle ajouter LIGNE|-   |   partiduo cle liste
 
         Dossiers sur ce poste, sans serveur : base dans le PostgreSQL du poste,
         servis à vous seul en http://<dossier>.partiduo.localhost:<port>/.
@@ -29,6 +31,12 @@ module PartiduoDist
           liste                  liste les dossiers
           supprimer NOM --confirmer NOM
                                  supprime le dossier : base, pièces jointes, réglages
+          sauvegarder NOM [--vers RÉP]
+                                 sauvegarde chiffrée et signée, au format des serveurs
+          restaurer NOM --cle FICHIER [--depuis RÉP] [--sauvegarde NOM-DE-SAUVEGARDE]
+                        [--source DOSSIER] [--signataires FICHIER] [--remplacer]
+                                 restaure la dernière sauvegarde (ou celle nommée) ;
+                                 dossier existant : --remplacer, sauvegarde de sûreté d'abord
 
         Options de creer :
           --regime fr|be          régime fiscal (défaut : fr)
@@ -39,6 +47,11 @@ module PartiduoDist
           --with LISTE            extensions (einvoicing, perso, sepa…)
           --locale fr|en|nl       langue (défaut : fr)
           -- …                    options de provisionnement en plus (--siren…)
+
+        Sauvegardes (D-LOC-006) : chiffrées pour vos clés publiques (partiduo cle
+        ajouter), dans <PARTIDUO_HOME>/sauvegardes par défaut ; copiez ce répertoire
+        sur une clé USB ou un NAS. Votre clé privée et sa phrase de passe restent
+        hors de ce poste ; restaurer les demande (--cle).
 
         Répertoire : PARTIDUO_HOME, sinon $XDG_DATA_HOME/partiduo, sinon
         ~/.local/share/partiduo. PostgreSQL : PGHOST (socket, défaut /tmp),
@@ -54,6 +67,7 @@ module PartiduoDist
           puts "partiduo #{VERSION}"
           return 0
         end
+        return cle(home, args[1..]) if args.first == "cle"
         unless args.first == "dossier" && args.size >= 2
           STDERR.puts USAGE
           return 64
@@ -61,11 +75,13 @@ module PartiduoDist
         action = args[1]
         rest = args[2..]
         case action
-        when "creer"     then creer(home, rest)
-        when "ouvrir"    then ouvrir(home, rest)
-        when "fermer"    then fermer(home, rest)
-        when "liste"     then liste(home)
-        when "supprimer" then supprimer(home, rest)
+        when "creer"       then creer(home, rest)
+        when "ouvrir"      then ouvrir(home, rest)
+        when "fermer"      then fermer(home, rest)
+        when "liste"       then liste(home)
+        when "supprimer"   then supprimer(home, rest)
+        when "sauvegarder" then sauvegarder(home, rest)
+        when "restaurer"   then restaurer(home, rest)
         else
           STDERR.puts "partiduo : action inconnue : #{action}"
           STDERR.puts USAGE
@@ -272,6 +288,117 @@ module PartiduoDist
         FileUtils.rm_rf(dossier.dir)
         puts "Dossier #{dossier.name} supprimé."
         0
+      end
+
+      # --- cle, sauvegarder, restaurer (D-LOC-006) ----------------------------
+
+      def self.cle(home : Home, args : Array(String)) : Int32
+        backups = Backups.new(home)
+        case args.first?
+        when "ajouter"
+          raise Error.new("partiduo cle ajouter age1pq1… (ou - pour la lire sur l'entrée standard)") unless args.size == 2
+          line = args[1] == "-" ? STDIN.gets_to_end : args[1]
+          fingerprint = backups.add_recipient(line)
+          puts "Clé ajoutée (#{fingerprint[0, 16]}…) : les sauvegardes suivantes sont chiffrées pour elle."
+        when "liste"
+          backups.recipients.each { |recipient| puts "#{Crypto.recipient_fingerprint(recipient)[0, 16]}…  #{recipient[0, 30]}…" }
+          puts "Clé de signature de ce poste (#{Backups.station}) : #{backups.signing_public_line}"
+        else
+          raise Error.new("partiduo cle ajouter LIGNE|-  ou  partiduo cle liste")
+        end
+        0
+      end
+
+      def self.sauvegarder(home : Home, args : Array(String)) : Int32
+        store = ""
+        names = [] of String
+        OptionParser.parse(args) do |parser|
+          parser.on("--vers RÉP", "stockage des sauvegardes") { |value| store = value }
+          parser.unknown_args { |rest| names = rest }
+        end
+        dossier = existing(home, names)
+        backups = Backups.new(home)
+        result = backups.take(dossier, store.presence || backups.default_store)
+        puts "Sauvegarde de #{dossier.name} : #{File.join(result.store, result.locator.server, dossier.name)}/#{result.locator.stem}.*"
+        puts "Chiffrée pour vos clés (capsule #{result.locator.stem}.key.age) et signée par ce poste. " \
+             "Copiez le répertoire #{result.store} ailleurs (clé USB, NAS)."
+        0
+      end
+
+      def self.restaurer(home : Home, args : Array(String)) : Int32
+        key = store = stem = source = signers_file = ""
+        replace = false
+        names = [] of String
+        OptionParser.parse(args) do |parser|
+          parser.on("--cle FICHIER", "votre clé privée (fichier age, chiffré par phrase de passe)") { |value| key = value }
+          parser.on("--depuis RÉP", "stockage des sauvegardes") { |value| store = value }
+          parser.on("--sauvegarde NOM", "sauvegarde précise (backup-AAAAMMJJTHHMMSSZ)") { |value| stem = value }
+          parser.on("--source DOSSIER", "dossier sauvegardé, s'il diffère (ex. une sauvegarde de serveur)") { |value| source = value }
+          parser.on("--signataires FICHIER", "lignes allowed_signers des serveurs dont vient la sauvegarde") { |value| signers_file = value }
+          parser.on("--remplacer", "remplace un dossier existant") { replace = true }
+          parser.unknown_args { |rest| names = rest }
+        end
+        raise Error.new("un nom de dossier attendu") unless names.size == 1
+        name = names.first
+        raise Error.new("nom de dossier refusé : #{name}") unless Local.valid_name?(name)
+        raise Error.new("--cle FICHIER obligatoire : votre clé privée ouvre la capsule de la sauvegarde") if key.empty?
+        backups = Backups.new(home)
+        store_dir = store.presence || backups.default_store
+        signers = signers_file.empty? ? [] of String : File.read_lines(signers_file).reject { |line| line.strip.empty? || line.starts_with?('#') }
+        locator = backups.find(store_dir, source.presence || name, stem.presence)
+        verified = backups.verify(store_dir, locator, signers)
+        puts "== Sauvegarde #{locator} (#{verified.manifest.taken_at.to_s("%Y-%m-%d %H:%M UTC")}), signature vérifiée"
+        dossier = home.dossier(name)
+        if dossier.exists?
+          raise Error.new("le dossier #{name} existe : --remplacer pour le remplacer par la sauvegarde") unless replace
+          raise Error.new("le dossier #{name} est ouvert : fermez-le d'abord (partiduo dossier fermer #{name})") if dossier.open?
+          identity = backups.open_capsule(verified, key)
+          safety = backups.take(dossier, store_dir, "pre-restore")
+          puts "== Sauvegarde de sûreté : #{safety.locator.stem}"
+          backups.restore(verified, identity, dossier)
+          Programs.run!("partiduo-manage", ["migrate"], dossier.env, echo: false)
+        else
+          identity = backups.open_capsule(verified, key)
+          restore_new(home, backups, dossier, verified, identity)
+        end
+        puts "Dossier #{name} restauré : partiduo dossier ouvrir #{name}"
+        0
+      end
+
+      # Dossier neuf depuis une sauvegarde : réglages tirés comme à la
+      # création (port, clé secrète), base et pièces jointes de la
+      # sauvegarde, modules lus dans la base restaurée.
+      private def self.restore_new(home : Home, backups : Backups, dossier : Dossier, verified : Backups::Verified,
+                                   identity : String) : Nil
+        database = Local.database_for(dossier.name)
+        raise Error.new("la base #{database} existe déjà dans PostgreSQL") if Postgres.exists?(database)
+        port = home.free_port
+        env = {
+          "MARTEN_ENV"              => "local",
+          "MARTEN_SECRET_KEY"       => Local.secret_key,
+          "DATABASE_URL"            => Postgres.database_url(database),
+          "PARTIDUO_DOMAIN"         => DOMAIN,
+          "PARTIDUO_MODULES"        => "accounting,invoicing",
+          "PARTIDUO_MEDIA_ROOT"     => dossier.media_dir,
+          "PARTIDUO_MODELES_PDF"    => "auto",
+          "PORT"                    => port.to_s,
+          "PARTIDUO_LOCAL_NAME"     => "#{verified.manifest.dossier} (restauré)",
+          "PARTIDUO_LOCAL_DATABASE" => database,
+        }
+        env["PARTIDUO_ASSETS_ROOT"] = File.join(home.root, "assets") unless Programs.installed_assets?
+        begin
+          dossier.save(env)
+          backups.restore(verified, identity, dossier)
+          Programs.run!("partiduo-manage", ["migrate"], env, echo: false)
+          Backups.active_modules(env).try { |modules| env["PARTIDUO_MODULES"] = modules }
+          collect_assets(env)
+          dossier.save(env)
+        rescue ex
+          STDERR.puts "partiduo : restauration interrompue, base et répertoire retirés"
+          Postgres.dropdb(database) rescue nil
+          FileUtils.rm_rf(dossier.dir)
+          raise ex
+        end
       end
 
       private def self.existing(home : Home, names : Array(String)) : Dossier

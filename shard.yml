@@ -1,5 +1,5 @@
 name: partiduo-dist
-version: 0.1.13
+version: 0.1.14
 
 description: |
   Distribution de production de Partiduo : le cœur, l'interface Bulma et
@@ -103,6 +103,11 @@ dependencies:
   # Formulaires publics par jeton (ADR-003) ; dépôt à publier.
   partiduo-form:
     github: aloli-partiduo/partiduo-form
+    branch: development
+  # Format des sauvegardes (commande partiduo : dossiers locaux), le même que
+  # sur les serveurs.
+  partiduo-backup:
+    github: aloli-partiduo/partiduo-backup
     branch: development
   marten:
     github: aloli-crystal/marten

@@ -88,6 +88,10 @@ shards:
     git: https://github.com/aloli-partiduo/partiduo-amortis.git
     version: 0.1.2+git.commit.558214a03f8768a7255232f095d7a1abe16692fc
 
+  partiduo-backup:
+    git: https://github.com/aloli-partiduo/partiduo-backup.git
+    version: 0.1.1+git.commit.88f24eb76036ad3c31d99de8f165a7795ab45c60
+
   partiduo-bankimport:
     git: https://github.com/aloli-partiduo/partiduo-bankimport.git
     version: 0.1.3+git.commit.a363e077961f388867ce5887e1fa16576aa2b055

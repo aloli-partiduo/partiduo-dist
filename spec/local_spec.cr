@@ -81,3 +81,24 @@ describe PartiduoDist::Local::CLI do
     run_cli(home, ["--version"]).should eq(0)
   end
 end
+
+describe PartiduoDist::Local::Backups do
+  it "nomme le poste, n'accepte que des clés post-quantiques, refuse une sauvegarde sans clé déclarée" do
+    home = scratch_home
+    backups = Local::Backups.new(home)
+    PartiduoBackup::Locator.valid_server?(Local::Backups.station).should be_true
+    expect_raises(Local::Error, /aucune clé de sauvegarde/) { backups.recipients }
+    expect_raises(Local::Error, /age1pq1/) { backups.add_recipient("age1qqqqqqqqqqqqqqqqqqqqqqqqqqqq") }
+    recipient = PartiduoBackup::Crypto.keygen.recipient
+    backups.add_recipient("#{recipient}\n").should eq(PartiduoBackup::Crypto.recipient_fingerprint(recipient))
+    backups.add_recipient(recipient)
+    backups.recipients.should eq([recipient])
+    backups.signing_public_line.should start_with("ssh-ed25519 ")
+    (File.info(backups.signing_key_path).permissions.value & 0o077).should eq(0)
+    dossier = home.dossier("famille")
+    dossier.save({"PORT" => "8401", "PARTIDUO_LOCAL_DATABASE" => "partiduo_local_famille"})
+    expect_raises(Local::Error, /stockage introuvable/) { backups.find(File.join(home.root, "absent"), "famille") }
+    Dir.mkdir_p(backups.default_store)
+    expect_raises(Local::Error, /aucune sauvegarde chiffrée de famille/) { backups.find(backups.default_store, "famille") }
+  end
+end

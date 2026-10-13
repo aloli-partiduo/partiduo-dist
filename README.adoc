@@ -56,9 +56,49 @@ partiduo dossier supprimer famille --confirmer famille
   d'accès y fonctionnent.
 * La connexion est la même que sur un serveur : un poste partagé ne donne
   pas accès aux comptes.
-* Sauvegardes au format des serveurs (age post-quantique, manifeste
-  signé), pour passer un dossier du poste à un hébergeur et inversement :
-  étape suivante (`partiduo-backup`).
+* Sauvegardes au format des serveurs (shard `partiduo-backup`, ci-dessous).
+
+=== Sauvegardes d'un dossier local
+
+Même format que sur les serveurs (D-LOC-006, D-CHF-013 à D-CHF-025) :
+fichiers `age` post-quantiques, capsule chiffrée pour *vos* clés (vous
+tenez ici le rôle de l'exploitant), manifeste signé par la clé du poste,
+stockage en écriture unique. Une sauvegarde prise ici se restaure sur un
+serveur, et inversement.
+
+Une seule fois, créez votre clé, gardez-la hors de ce poste (deux copies,
+clé USB), et déclarez sa clé publique :
+
+[source,sh]
+----
+age-keygen -pq | age -p > ~/partiduo-cle.age
+age -d ~/partiduo-cle.age | age-keygen -y | partiduo cle ajouter -
+----
+
+Ensuite :
+
+[source,sh]
+----
+partiduo dossier sauvegarder famille
+partiduo dossier restaurer famille --cle ~/partiduo-cle.age --remplacer
+partiduo dossier restaurer copie --source famille --cle ~/partiduo-cle.age
+----
+
+* `sauvegarder` : relit la sauvegarde à sa prise, puis la range dans
+  `<PARTIDUO_HOME>/sauvegardes/<poste>/<dossier>/` (`--vers RÉP` pour une
+  clé USB ou un NAS) ; copiez ce répertoire ailleurs, il ne contient aucune
+  clé en clair.
+* `restaurer` : la plus récente (`--sauvegarde backup-…` pour une autre),
+  signature du manifeste et empreintes vérifiées, capsule ouverte par votre
+  clé (`age` demande sa phrase de passe), fichiers authentifiés en entier
+  avant le premier geste. Un dossier existant n'est remplacé qu'avec
+  `--remplacer`, fermé, et après une sauvegarde de sûreté (`pre-restore-…`).
+  Un nom nouveau crée un dossier, modules lus dans la base restaurée.
+* Une sauvegarde d'un serveur : `--depuis` son répertoire copié,
+  `--source <dossier>`, `--signataires` les lignes `allowed_signers` de ses
+  clés de signature, et une clé qui ouvre sa capsule.
+* `partiduo cle liste` : vos clés, et la clé de signature du poste (à
+  déclarer dans une administration où ces sauvegardes iraient).
 
 Programmes : ceux installés à côté de `partiduo` ; en développement,
 `PARTIDUO_DIST_BIN` (ex. `bin/` de ce dépôt), et les fichiers statiques
