@@ -1,5 +1,5 @@
 name: partiduo-dist
-version: 0.1.11
+version: 0.1.12
 
 description: |
   Distribution de production de Partiduo : le cœur, l'interface Bulma et
@@ -22,6 +22,10 @@ targets:
   # Ligne de commande Marten (migrate, provision, collectassets…).
   partiduo-manage:
     main: manage.cr
+  # Dossiers locaux, sans serveur : pilote partiduo-manage et
+  # partiduo-server, sans charger l'application.
+  partiduo:
+    main: src/local.cr
   # Convertisseur PDF de MODELES, lancé en processus séparé par le serveur
   # (partiduo-modeles, D-MOD-017).
   partiduo-modeles-pdf:

@@ -15,9 +15,60 @@ application. C'est la source du paquet FreeBSD `partiduo-app` (dépôt de ports
 |`partiduo-server` |Serveur HTTP d'une instance (réglages de production de `partiduo-ui-bulma`).
 |`partiduo-manage` |Ligne de commande Marten : `migrate`, `provision`, `collectassets`… et `demo` (démonstration, ci-dessous).
 |`partiduo-modeles-pdf` |Convertisseur PDF de l'extension MODELES, lancé par le serveur (`PARTIDUO_MODELES_PDF=auto` : cherché à côté de `partiduo-server`).
+|`partiduo` |Dossiers sur le poste de leur utilisateur, sans serveur (ci-dessous).
 |===
 
 Chaque extension s'active ou non par instance (`PARTIDUO_MODULES`).
+
+== Dossiers locaux, sans serveur
+
+`partiduo` crée et ouvre des dossiers sur le poste de leur utilisateur
+(macOS, FreeBSD), pour gérer ses finances ou son entreprise sans serveur
+(D-LOC-001 à D-LOC-006 de partiduo-app). Il faut seulement PostgreSQL sur
+le poste (Postgres.app ou Homebrew sur macOS ; `postgresql17-server` sur
+FreeBSD), et les programmes de cette distribution.
+
+[source,sh]
+----
+partiduo dossier creer famille --name "Foyer Martin" --kind household --admin-email moi@exemple.fr
+partiduo dossier ouvrir famille
+partiduo dossier liste
+partiduo dossier fermer famille
+partiduo dossier supprimer famille --confirmer famille
+----
+
+* `creer` : base `partiduo_local_<dossier>` dans le PostgreSQL du poste
+  (socket `PGHOST`, défaut `/tmp`), migrations, provisionnement, puis le
+  lien du premier accès (mot de passe ou clé d'accès), comme pour une
+  instance de serveur. Un échec retire la base et le répertoire.
+* `ouvrir` : démarre le serveur du dossier, détaché du terminal, sur
+  `http://<dossier>.partiduo.localhost:<port>/` (127.0.0.1 seulement ;
+  ports 8400 et suivants, un par dossier), et l'ouvre dans le navigateur
+  (`--sans-navigateur` sinon). Le serveur tourne jusqu'à `fermer`.
+* Données : `PARTIDUO_HOME`, sinon `$XDG_DATA_HOME/partiduo`, sinon
+  `~/.local/share/partiduo` ; un répertoire par dossier : `dossier.env`
+  (réglages du serveur, dont sa clé secrète, 0600), `media/` (pièces
+  jointes), `serveur.log`.
+* Le serveur tourne en `MARTEN_ENV=local` (`config/settings/local.cr`) :
+  comme la production (pas de débogage, clé secrète, gabarits en cache),
+  mais en HTTP sur 127.0.0.1, sans cookies `Secure` ni HSTS ; les
+  navigateurs tiennent `*.localhost` pour un contexte sécurisé, et les clés
+  d'accès y fonctionnent.
+* La connexion est la même que sur un serveur : un poste partagé ne donne
+  pas accès aux comptes.
+* Sauvegardes au format des serveurs (age post-quantique, manifeste
+  signé), pour passer un dossier du poste à un hébergeur et inversement :
+  étape suivante (`partiduo-backup`).
+
+Programmes : ceux installés à côté de `partiduo` ; en développement,
+`PARTIDUO_DIST_BIN` (ex. `bin/` de ce dépôt), et les fichiers statiques
+sont alors collectés une fois dans `<PARTIDUO_HOME>/assets`.
+
+[source,sh]
+----
+SKIP_MARTEN_CLI_PRECOMPILATION=1 shards build partiduo partiduo-manage partiduo-server --no-debug
+PARTIDUO_DIST_BIN=$PWD/bin bin/partiduo dossier creer essai --name "Essai SARL" --admin-email moi@exemple.fr
+----
 
 == Deux branches, deux paquets
 
