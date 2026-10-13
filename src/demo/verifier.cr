@@ -52,6 +52,11 @@ module PartiduoDist
         when "liberal_journal"     then liberal_journal(control)
         when "exercice_liberal"    then liberal_year(control)
         when "previsions"          then forecasts(control)
+        when "perso_comptes"       then perso_accounts(control)
+        when "perso_budget"        then perso_budget(control)
+        when "perso_valorisations" then perso_valuations(control)
+        when "perso_emprunt"       then perso_loan(control)
+        when "perso_echeances"     then perso_dues(control)
         else                            raise LoadError.new("attendus.yml : contrôle « #{control.type} » inconnu")
         end
       end
@@ -186,6 +191,43 @@ module PartiduoDist
 
       private def forecasts(control : Format::Controle) : Outcome
         Outcome.new("prévisions budgétaires", control.nombre.to_s, Acc.forecasts(actor).size.to_s)
+      end
+
+      # --- Foyer (extension PERSO) ----------------------------------------------------
+
+      private def perso_accounts(control : Format::Controle) : Outcome
+        Outcome.new("comptes du foyer", control.nombre.to_s, Perso::Api.accounts(actor).size.to_s)
+      end
+
+      private def perso_budget(control : Format::Controle) : Outcome
+        year = year(control)
+        budget = Perso::Api.budget(actor, year)
+        actual = budget.try(&.lines.size.to_s) || "aucun budget"
+        Outcome.new("catégories budgétées #{year}", control.nombre.to_s, actual)
+      end
+
+      private def perso_valuations(control : Format::Controle) : Outcome
+        count = Perso::Api.holdings(actor).sum(&.valuations.size)
+        Outcome.new("valorisations saisies", control.nombre.to_s, count.to_s)
+      end
+
+      # Capital restant dû au 31 décembre de l'exercice, selon le tableau
+      # d'amortissement de l'emprunt.
+      private def perso_loan(control : Format::Controle) : Outcome
+        year = year(control)
+        loan = Perso::Api.loans(actor).first? || raise LoadError.new("perso_emprunt : aucun emprunt")
+        last = loan.rows.reverse_each.find { |row| row.due_on <= Time.utc(year, 12, 31) }
+        remaining = last.try(&.remaining) || loan.current.initial_principal
+        Outcome.new("capital restant dû au 31/12/#{year}", amount(control.montant), decimal(remaining))
+      end
+
+      # Échéances de l'exercice confirmées ou rapprochées d'une ligne importée.
+      private def perso_dues(control : Format::Controle) : Outcome
+        year = year(control)
+        schedule = Perso::Api.schedule(actor, Time.utc(year, 1, 1), Time.utc(year, 12, 31))
+        count = schedule.dues.count { |due| due.due_on.year == year && due.status.in?("confirmed", "matched") }
+        minimum = control.minimum || 1
+        Outcome.new("échéances #{year} confirmées ou rapprochées ≥ #{minimum}", "oui", count >= minimum ? "oui" : "non (#{count})")
       end
     end
   end

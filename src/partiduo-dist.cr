@@ -3,8 +3,8 @@
 # Composition de la distribution de production : l'interface Bulma (qui
 # charge le cœur), puis chaque extension et son interface. L'ordre suit les
 # dépendances entre extensions (EINV après DOCUMENT, SUPERPDP et ESALINK
-# après EINV). Les réglages (`config/settings/`) ajoutent leurs
-# applications Marten.
+# après EINV, PERSO après BANKIMPORT). Les réglages (`config/settings/`)
+# ajoutent leurs applications Marten.
 require "partiduo-ui-bulma/partiduo_ui"
 require "partiduo-document"
 require "partiduo-document/ui/bulma"
@@ -26,6 +26,8 @@ require "partiduo-modeles"
 require "partiduo-modeles/ui/bulma"
 require "partiduo-bankimport"
 require "partiduo-bankimport/ui/bulma"
+require "partiduo-perso"
+require "partiduo-perso/ui/bulma"
 require "partiduo-amortis"
 require "partiduo-amortis/ui/bulma"
 require "partiduo-sepa"

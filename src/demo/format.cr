@@ -304,6 +304,53 @@ module PartiduoDist
         getter regles : Array(Regle) = [] of Regle
       end
 
+      # Finances du foyer (extension PERSO, ADR-011) : membres, comptes du
+      # foyer (repris d'un compte du plan ou créés), catégories propres,
+      # étiquettes fiscales des catégories du plan.
+      class MembrePerso
+        include Strict
+        getter email : String
+        getter prenom : String
+        getter role : String = "adult"
+      end
+
+      class ComptePerso
+        include Strict
+        getter nature : String
+        getter libelle : String
+        getter compte : String?
+        getter etablissement : String = ""
+        getter genre : String = ""
+        getter taux : String?
+        getter plafond : String?
+        getter ouverture : String?
+        getter titulaires : Array(String) = [] of String
+        getter solde_ouverture : String?
+      end
+
+      class CategoriePerso
+        include Strict
+        getter libelle : String
+        getter sens : String = "expense"
+        getter parent : String?
+        getter parent_compte : String?
+        getter etiquette : String = ""
+      end
+
+      class EtiquettePerso
+        include Strict
+        getter compte : String
+        getter etiquette : String
+      end
+
+      class ParamPerso
+        include Strict
+        getter membres : Array(MembrePerso) = [] of MembrePerso
+        getter comptes : Array(ComptePerso) = [] of ComptePerso
+        getter categories : Array(CategoriePerso) = [] of CategoriePerso
+        getter etiquettes : Array(EtiquettePerso) = [] of EtiquettePerso
+      end
+
       class Parametres
         include Strict
         getter format : Int32
@@ -317,6 +364,7 @@ module PartiduoDist
         getter teledec : ParamTeledec?
         getter urssaf : ParamPlateforme?
         getter bankimport : ParamBankimport?
+        getter perso : ParamPerso?
       end
 
       # --- operations.yml : éléments communs --------------------------------------
@@ -487,6 +535,26 @@ module PartiduoDist
         getter elements : Array(ElementPrevision)
       end
 
+      class AssurancePerso
+        include Strict
+        getter mode : String
+        getter valeur : String
+      end
+
+      class LigneBudgetPerso
+        include Strict
+        getter categorie : String
+        getter montant : String
+        getter periode : String = "monthly"
+      end
+
+      class LigneTitrePerso
+        include Strict
+        getter titre : String
+        getter quantite : String
+        getter cours : String
+      end
+
       # --- operations.yml : opérations -------------------------------------------
 
       abstract class Operation
@@ -530,6 +598,12 @@ module PartiduoDist
           modeles:                    ModelesOperation,
           import_releve:              ImportReleve,
           prevision:                  Prevision,
+          perso_emprunt:              PersoEmprunt,
+          perso_recurrente:           PersoRecurrente,
+          perso_valorisation:         PersoValorisation,
+          perso_budget:               PersoBudget,
+          perso_deplacements:         PersoDeplacements,
+          perso_operation:            PersoOperation,
         }
       end
 
@@ -745,6 +819,75 @@ module PartiduoDist
         getter debut : String
         getter fin : String
         getter categories : Array(CategoriePrevision)
+      end
+
+      # Emprunt d'un compte de dette du foyer et son tableau d'amortissement.
+      class PersoEmprunt < Operation
+        getter compte : String
+        getter compte_payeur : String
+        getter capital : String
+        getter taux : String
+        getter echeances : Int32
+        getter premiere_echeance : String
+        getter differe : Int32 = 0
+        getter type_differe : String = "none"
+        getter assurance : AssurancePerso?
+        getter categorie_interets : String
+        getter categorie_assurance : String?
+      end
+
+      # Opération récurrente de l'échéancier, à partir de la date de
+      # l'opération (ou de `premiere`).
+      class PersoRecurrente < Operation
+        getter compte : String
+        getter sens : String = "expense"
+        getter beneficiaire : String
+        getter montant : String
+        getter? estime : Bool = false
+        getter frequence : String = "monthly"
+        getter intervalle : Int32?
+        getter premiere : String?
+        getter derniere : String?
+        getter? jour_ouvre : Bool = false
+        getter categorie : String?
+        getter vers : String?
+        getter membre : String?
+      end
+
+      # Valeur d'un placement ou d'un bien à la date de l'opération.
+      class PersoValorisation < Operation
+        getter compte : String
+        getter valeur : String?
+        getter lignes : Array(LigneTitrePerso) = [] of LigneTitrePerso
+        getter note : String = ""
+      end
+
+      # Budget d'une année : montant par catégorie (compte du plan).
+      class PersoBudget < Operation
+        getter annee : String
+        getter lignes : Array(LigneBudgetPerso)
+      end
+
+      # Déplacements professionnels d'une année (frais réels).
+      class PersoDeplacements < Operation
+        getter annee : String
+        getter puissance : Int32
+        getter kilometres : Int32
+        getter libelle : String = ""
+        getter membre : String?
+      end
+
+      # Opération saisie en recettes et dépenses (catégorie : compte du plan ;
+      # virement : `vers`, libellé d'un compte du foyer).
+      class PersoOperation < Operation
+        getter compte : String
+        getter sens : String = "expense"
+        getter montant : String
+        getter categorie : String?
+        getter vers : String?
+        getter beneficiaire : String = ""
+        getter membre : String?
+        getter note : String = ""
       end
 
       class OperationsFile

@@ -1,5 +1,5 @@
 name: partiduo-dist
-version: 0.1.10
+version: 0.1.11
 
 description: |
   Distribution de production de Partiduo : le cœur, l'interface Bulma et
@@ -74,6 +74,11 @@ dependencies:
   # Import des relevés bancaires (ADR-011 D6) ; dépôt à publier.
   partiduo-bankimport:
     github: aloli-partiduo/partiduo-bankimport
+    branch: development
+  # Finances personnelles d'un foyer (ADR-011), sur l'import des relevés ;
+  # dépôt à publier.
+  partiduo-perso:
+    github: aloli-partiduo/partiduo-perso
     branch: development
   # Immobilisations et amortissements (ADR-003) ; dépôt à publier.
   partiduo-amortis:

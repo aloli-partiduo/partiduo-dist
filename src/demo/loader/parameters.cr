@@ -39,6 +39,7 @@ module PartiduoDist
             Urssaf::SimulatedUrssaf::CLIENT_SECRET)), "identifiants URSSAF simulés")
         end
         parameters.bankimport.try { |bankimport| bankimport_settings(bankimport) }
+        parameters.perso.try { |perso| perso_settings(perso) }
       end
 
       # Un service externe de démonstration est toujours simulé.
