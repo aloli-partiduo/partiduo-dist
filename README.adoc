@@ -13,7 +13,7 @@ application. C'est la source du paquet FreeBSD `partiduo-app` (dépôt de ports
 |Programme |Rôle
 
 |`partiduo-server` |Serveur HTTP d'une instance (réglages de production de `partiduo-ui-bulma`).
-|`partiduo-manage` |Ligne de commande Marten : `migrate`, `provision`, `collectassets`… et `demo` (démonstration, ci-dessous).
+|`partiduo-manage` |Ligne de commande Marten : `migrate`, `provision`, `collectassets`… et `demo` (démonstration, ci-dessous). Dans le paquet, c'est un lien vers `partiduo-server`, qui en prend le rôle sous ce nom : l'application n'est compilée qu'une fois (D-PKG-011 de partiduo-app). En développement, la cible `partiduo-manage` (`manage.cr`) reste disponible.
 |`partiduo-modeles-pdf` |Convertisseur PDF de l'extension MODELES, lancé par le serveur (`PARTIDUO_MODELES_PDF=auto` : cherché à côté de `partiduo-server`).
 |`partiduo` |Dossiers sur le poste de leur utilisateur, sans serveur (ci-dessous).
 |===
