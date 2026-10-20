@@ -252,3 +252,39 @@ rm -f shard.override.yml
 SKIP_MARTEN_CLI_PRECOMPILATION=1 shards update
 scripts/override-local.sh   # retour au mode local
 ----
+
+== Specs
+
+La distribution n'a pas de CI : ses specs se lancent sur le poste, avec
+PostgreSQL (socket `/tmp`) et une base de test dont le nom contient « test ».
+Elles composent toute l'application (cœur, interface, toutes les
+extensions) ; la compilation est longue (une dizaine de minutes).
+
+[source,sh]
+----
+createdb -h /tmp partiduo_test_dist
+DATABASE_URL='postgres:///partiduo_test_dist?host=/tmp' crystal spec
+dropdb -h /tmp partiduo_test_dist
+----
+
+`spec/translations_spec.cr` contrôle les traductions de *toutes les pages* en
+fr, en et nl : chaque route du routeur de Marten servie en `GET` (montages
+des extensions compris : une nouvelle page est couverte d'office), obtenue
+dans chaque langue par l'administrateur de chaque dossier de démonstration
+(`atelier`, avec en plus les extensions qu'aucun dossier n'active, `micro`,
+`liberal`, `foyer` avec PERSO ; interface simplifiée et complète), plus les
+pages sans connexion, le formulaire public de FORM et les pages d'erreur. Une
+page ne doit contenir ni « missing translation », ni clé brute (`ui.…`),
+ni interpolation non résolue (`%{…}`) ; une route servie en `GET` qu'aucun
+lien n'atteint fait échouer la spec, sauf exclusion motivée dans la spec.
+Le contrôle est celui de l'interface
+(`lib/partiduo-ui-bulma/spec/support/translations.cr`). Les dossiers sont lus
+dans le dépôt voisin `../partiduo-demo/dossiers`, ou dans
+`PARTIDUO_DEMO_DOSSIERS` ; absents, la spec est mise en attente.
+
+Pour ne lancer que celle-ci :
+
+[source,sh]
+----
+DATABASE_URL='postgres:///partiduo_test_dist?host=/tmp' crystal spec spec/translations_spec.cr
+----
