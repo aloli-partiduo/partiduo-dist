@@ -3,7 +3,8 @@
 # Composition de la distribution de production : l'interface Bulma (qui
 # charge le cœur), puis chaque extension et son interface. L'ordre suit les
 # dépendances entre extensions (EINV après DOCUMENT, SUPERPDP et ESALINK
-# après EINV, PERSO après BANKIMPORT). Les réglages (`config/settings/`)
+# après EINV, PERSO après BANKIMPORT, annexes de la liasse d'AMORTIS
+# après TELEDEC et AMORTIS). Les réglages (`config/settings/`)
 # ajoutent leurs applications Marten.
 require "partiduo-ui-bulma/partiduo_ui"
 require "partiduo-document"
@@ -30,6 +31,9 @@ require "partiduo-perso"
 require "partiduo-perso/ui/bulma"
 require "partiduo-amortis"
 require "partiduo-amortis/ui/bulma"
+# Annexes 2054 et 2055 de la liasse fournies par AMORTIS à TELEDEC
+# (accroche A-AMO-2 de partiduo-teledec).
+require "partiduo-amortis/teledec"
 require "partiduo-sepa"
 require "partiduo-sepa/ui/bulma"
 require "partiduo-reports"
