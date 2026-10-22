@@ -8,7 +8,10 @@ require "./spec_helper"
 # `GET`, obtenue en fr, en et nl par un administrateur, sur les dossiers de
 # démonstration de `partiduo-demo` (entreprise, micro-entreprise,
 # profession libérale, foyer avec PERSO), dans l'interface simplifiée et
-# complète, plus les pages d'accès sans connexion et d'erreur. Le contrôle
+# complète, plus les pages d'accès sans connexion et d'erreur, puis
+# l'envoi de chaque formulaire relevé dans les pages (vide, valeurs
+# fausses, bouton d'action tel quel), réponse, message flash et réponse
+# HTMX contrôlés. Le contrôle
 # est celui de l'interface (`PartiduoUi::Translations`, dans
 # lib/partiduo-ui-bulma/spec/support/translations.cr) : ni marqueur de
 # traduction absente, ni clé brute, ni interpolation non résolue, et toute
@@ -28,6 +31,14 @@ private EXCLUSIONS = {
   "login_federated_acs"      => "réponse SAML, reçue en POST ; en GET, même handler que le retour OIDC",
   "invitation_connect"       => "départ vers connect (redirection hors du site)",
   "teledec_callback"         => "rappel de machine à machine de TELEDEC, sans page",
+}
+
+# Formulaires jamais envoyés : appel d'une plateforme externe que la spec
+# ne simule pas (transport de test qui refuse tout autre hôte).
+private UNSENT = {
+  "superpdp:connect"    => "connexion à la plateforme SUPERPDP (api.superpdp.tech)",
+  "einv:sync"           => "synchronisation avec la plateforme agréée (api.superpdp.tech)",
+  "einv:settings_check" => "essai de connexion à la plateforme agréée (api.superpdp.tech)",
 }
 
 # Variables des modèles de relance, citées telles quelles dans l'aide des
@@ -84,7 +95,7 @@ end
 describe "Traductions de toutes les pages de la distribution (fr, en, nl)" do
   it "rend chaque page du cœur et des extensions dans chaque langue, sans clé absente, brute ni interpolation non résolue" do
     pending!("dossiers de démonstration absents : #{DOSSIERS} (PARTIDUO_DEMO_DOSSIERS)") unless Dir.exists?(DOSSIERS)
-    explorer = PartiduoUi::Translations::Explorer.new(EXCLUSIONS, literals: LITERALS) { true }
+    explorer = PartiduoUi::Translations::Explorer.new(EXCLUSIONS, literals: LITERALS, unsent: UNSENT) { true }
 
     explorer.visit_placeholders(PartiduoUi::Browser.new, "anonyme, instance vierge")
 
@@ -93,12 +104,19 @@ describe "Traductions de toutes les pages de la distribution (fr, en, nl)" do
     browser = PartiduoUi::Accounts.signed_in(gerante)
     explorer.crawl(browser, "atelier")
     explorer.visit_placeholders(browser, "atelier, objets inconnus")
-    explorer.crawl(PartiduoUi::Browser.new, "anonyme, formulaire public", [public_form(gerante)])
+    anonymous = PartiduoUi::Browser.new
+    explorer.crawl(anonymous, "anonyme, formulaire public", [public_form(gerante)])
+    # Envoi de chaque formulaire relevé (vide, valeurs fausses, bouton
+    # d'action tel quel) : erreurs, messages flash, réponses HTMX, refus.
+    explorer.submit_forms(anonymous, "anonyme, formulaire public", explorer.forms.select(&.action.starts_with?("/p/")))
+    explorer.submit_forms(browser, "atelier")
 
     {"micro", "liberal", "foyer"}.each do |code|
       email = load(code)
-      explorer.crawl(PartiduoUi::Accounts.signed_in(email), "#{code}, simplifiée")
+      member = PartiduoUi::Accounts.signed_in(email)
+      explorer.crawl(member, "#{code}, simplifiée")
       explorer.crawl(accountant, "#{code}, complète") unless code == "foyer"
+      explorer.submit_forms(member, code)
     end
 
     ENV.delete("PARTIDUO_MODULES")
