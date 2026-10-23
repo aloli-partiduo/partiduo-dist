@@ -5,7 +5,8 @@ require "./spec_helper"
 # Traductions de toutes les pages de la distribution (ADR-005 D7) : le cœur,
 # l'interface et les écrans de toutes les extensions composées, chaque
 # route du routeur de Marten (montages des extensions compris) servie en
-# `GET`, obtenue en fr, en et nl par un administrateur, sur les dossiers de
+# `GET`, obtenue dans chaque langue livrée (fr, en, nl, de, es, it, pt) par
+# un administrateur, sur les dossiers de
 # démonstration de `partiduo-demo` (entreprise, micro-entreprise,
 # profession libérale, foyer avec PERSO), dans l'interface simplifiée et
 # complète, plus les pages d'accès sans connexion et d'erreur, puis
@@ -92,7 +93,7 @@ private def accountant : PartiduoUi::Browser
   PartiduoUi::Accounts.signed_in("expert@example.com")
 end
 
-describe "Traductions de toutes les pages de la distribution (fr, en, nl)" do
+describe "Traductions de toutes les pages de la distribution (chaque langue livrée)" do
   it "rend chaque page du cœur et des extensions dans chaque langue, sans clé absente, brute ni interpolation non résolue" do
     pending!("dossiers de démonstration absents : #{DOSSIERS} (PARTIDUO_DEMO_DOSSIERS)") unless Dir.exists?(DOSSIERS)
     explorer = PartiduoUi::Translations::Explorer.new(EXCLUSIONS, literals: LITERALS, unsent: UNSENT) { true }
@@ -105,6 +106,10 @@ describe "Traductions de toutes les pages de la distribution (fr, en, nl)" do
     explorer.crawl(browser, "atelier")
     explorer.visit_placeholders(browser, "atelier, objets inconnus")
     anonymous = PartiduoUi::Browser.new
+    # Les jetons inventés des pages d'accès, essayés dans chaque langue, ont
+    # bloqué l'adresse de test (blocage des essais de jetons de FORM, dix par
+    # quart d'heure) : la visite du vrai lien repart d'un compteur vide.
+    Forms::Ui::Throttle.reset!
     explorer.crawl(anonymous, "anonyme, formulaire public", [public_form(gerante)])
     # Envoi de chaque formulaire relevé (vide, valeurs fausses, bouton
     # d'action tel quel) : erreurs, messages flash, réponses HTMX, refus.

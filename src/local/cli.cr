@@ -45,7 +45,8 @@ module PartiduoDist
           --modules LISTE         modules (défaut : accounting,invoicing ;
                                   foyer : accounting)
           --with LISTE            extensions (einvoicing, perso, sepa…)
-          --locale fr|en|nl       langue (défaut : fr)
+          --locale CODE           langue du dossier : fr, en, nl, de, es, it, pt
+                                  (défaut : fr)
           -- …                    options de provisionnement en plus (--siren…)
 
         Sauvegardes (D-LOC-006) : chiffrées pour vos clés publiques (partiduo cle
@@ -113,7 +114,7 @@ module PartiduoDist
           parser.on("--kind TYPE", "company ou household") { |value| kind = value }
           parser.on("--modules LISTE", "modules activés") { |value| modules = value }
           parser.on("--with LISTE", "extensions activées") { |value| extensions = value }
-          parser.on("--locale CODE", "fr, en ou nl") { |value| locale = value }
+          parser.on("--locale CODE", "fr, en, nl, de, es, it ou pt") { |value| locale = value }
           parser.unknown_args { |rest| names = rest }
         end
         raise Error.new("un nom de dossier attendu (minuscules, chiffres, tirets)") unless names.size == 1

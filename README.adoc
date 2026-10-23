@@ -267,8 +267,8 @@ DATABASE_URL='postgres:///partiduo_test_dist?host=/tmp' crystal spec
 dropdb -h /tmp partiduo_test_dist
 ----
 
-`spec/translations_spec.cr` contrôle les traductions de *toutes les pages* en
-fr, en et nl : chaque route du routeur de Marten servie en `GET` (montages
+`spec/translations_spec.cr` contrôle les traductions de *toutes les pages*
+dans les sept langues livrées (fr, en, nl, de, es, it, pt) : chaque route du routeur de Marten servie en `GET` (montages
 des extensions compris : une nouvelle page est couverte d'office), obtenue
 dans chaque langue par l'administrateur de chaque dossier de démonstration
 (`atelier`, avec en plus les extensions qu'aucun dossier n'active, `micro`,
