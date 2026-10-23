@@ -82,11 +82,11 @@ shards:
 
   partiduo:
     git: https://github.com/aloli-partiduo/partiduo-app.git
-    version: 0.1.37+git.commit.10d5914e2988cb8eb07f71f608fb72e6ec2952d1
+    version: 0.1.46+git.commit.9863bf96d6f7eca2d2f28664a85565db856300a6
 
   partiduo-amortis:
     git: https://github.com/aloli-partiduo/partiduo-amortis.git
-    version: 0.1.6+git.commit.118e3af2d06c60809de655d1263c482078c7998f
+    version: 0.1.8+git.commit.efc29618b524dab44ba39c71ed166eb5fcaa7d42
 
   partiduo-backup:
     git: https://github.com/aloli-partiduo/partiduo-backup.git
@@ -94,7 +94,7 @@ shards:
 
   partiduo-bankimport:
     git: https://github.com/aloli-partiduo/partiduo-bankimport.git
-    version: 0.1.6+git.commit.0fee3cbaac051e2b0dda97281712eef3b05bd814
+    version: 0.1.9+git.commit.d52d83495d1bc81bce5dae7badbd23f9dffcc11e
 
   partiduo-choruspro:
     git: https://github.com/aloli-partiduo/partiduo-choruspro.git
@@ -102,7 +102,7 @@ shards:
 
   partiduo-crm:
     git: https://github.com/aloli-partiduo/partiduo-crm.git
-    version: 0.1.6+git.commit.33e62fdeeae3440e0fbec392528e3187b2ce2525
+    version: 0.1.9+git.commit.c76bcee39cf14fa891f45e9b9bf2cf699669f797
 
   partiduo-document:
     git: https://github.com/aloli-partiduo/partiduo-document.git
@@ -118,7 +118,7 @@ shards:
 
   partiduo-form:
     git: https://github.com/aloli-partiduo/partiduo-form.git
-    version: 0.1.6+git.commit.224fe87756ea7b58d2c6d6870f940480779963d2
+    version: 0.1.8+git.commit.0e380d9699930b8c23076ce30b9ccbe8c7ee3fd6
 
   partiduo-import:
     git: https://github.com/aloli-partiduo/partiduo-import.git
@@ -130,11 +130,11 @@ shards:
 
   partiduo-perso:
     git: https://github.com/aloli-partiduo/partiduo-perso.git
-    version: 0.1.8+git.commit.2ecf152f56a9f467f07f717cc36e5afb81384c57
+    version: 0.1.11+git.commit.77446002a78378419607c501462010a3918e0db0
 
   partiduo-reports:
     git: https://github.com/aloli-partiduo/partiduo-reports.git
-    version: 0.1.6+git.commit.018d2115f177b2bdd836f74e3c7aa8b1a09c96eb
+    version: 0.1.9+git.commit.3b2550e341a0a5c7823054c69189ac65b0070864
 
   partiduo-sepa:
     git: https://github.com/aloli-partiduo/partiduo-sepa.git
@@ -146,15 +146,15 @@ shards:
 
   partiduo-teledec:
     git: https://github.com/aloli-partiduo/partiduo-teledec.git
-    version: 0.1.7+git.commit.f717ceb1859ae150fe567788e6e93a5eaee56a90
+    version: 0.1.9+git.commit.e91c1859400a4adeeba2ac5c914e992e28c70781
 
   partiduo-ui-bulma:
     git: https://github.com/aloli-partiduo/partiduo-ui-bulma.git
-    version: 0.1.18+git.commit.a640c2c1f3849f8bd959b2f3c9e21e6e514876cc
+    version: 0.1.23+git.commit.9f8b77ec5fd735c7f6d072258d70efa6ad77533a
 
   partiduo-urssaf:
     git: https://github.com/aloli-partiduo/partiduo-urssaf.git
-    version: 0.1.5+git.commit.c225a5e0adfde132c4058cf4e76e4afaa388d857
+    version: 0.1.7+git.commit.9a0f382420e74cf30cb138bf2d03fda4fb8b34e7
 
   password-policy:
     git: https://github.com/aloli-crystal/password-policy.git
